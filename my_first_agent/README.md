@@ -7,16 +7,16 @@
 
 ### System Designer Name
 
-[Enter your name.]
+Michael Hong
 
 
 ### System Name
 
-[Use a default name "HackTrack" or enter the name you choose for the system.]
+HackTrack
 
 ### System Goal
-[Read Chapter 2 Section 2.1, then enter the well-structured goal of your agentic system]
+For CPVC organizers, accurately anticipate actual hackathon attendance so food, drinks, and swag can be planned to match real turnout, measured by the gap between predicted and actual attendance moving from roughly 60% (registrations vs. the ~40% attendance rate) to within 10-15%, without requiring excessive follow-up communication or compromising participant privacy.
 
 ### Who Is Better Off When This Works?
 
-[In one complete sentence, identify who will be better off when the system works.]
+Cal Poly Vibe Coding Club organizers will be better off, since they'll be able to plan food, drinks, and swag around real expected turnout instead of guessing off registration counts.
