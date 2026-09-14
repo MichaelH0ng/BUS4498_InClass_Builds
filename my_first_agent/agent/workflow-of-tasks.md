@@ -39,9 +39,11 @@ D2{" D2: Did the forecast generate successfully? "}
 D2 -- " No " --> STOP1([" Run incomplete: forecast failed to generate; stop without delivering "])
 D2 -- " Yes " --> D3
 D3{" D3: Does the new forecast shift by more than the set threshold (e.g. more than 10 percentage points) from the prior run? "}
-D3 -- " Yes: exceeds threshold " --> T7[" T7: Flag the forecast change for organizer review "]
 D3 -- " No: within threshold " --> T9
-T7 --> T8[" T8: Review the flagged change with an organizer before the forecast is treated as final "]
+D3 -- " Yes: exceeds threshold " --> T7[" T7: Investigate the likely cause of the shift by checking one approved signal at a time (new competing campus events, unusual concentration of 'not attending' replies from one group, promotion-channel issues like a broken RSVP link or viral post); let each finding determine which signal to check next "]
+T7 --> D5{" D5: Has a supported cause been identified, or has the check limit (3 checks) been reached? "}
+D5 -- " No: neither condition met yet, another approved check remains " --> T7
+D5 -- " Yes " --> T8[" T8: Review the flagged change, the investigation findings, and any unresolved question with an organizer before the forecast is treated as final "]
 T8 --> T9[" T9: Deliver the forecast to organizers through the shared dashboard or summary report "]
 T9 --> D4{" D4: Was the updated forecast stored or delivered to organizers? "}
 D4 -- " No " --> STOP2([" Run incomplete: update was not stored or delivered "])
