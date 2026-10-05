@@ -18,6 +18,8 @@ In the normal path, the system pulls current registration counts and any confirm
 
 The most important exception occurs when confirmation-response volume is too low to meaningfully update the model (for example, most participants haven't replied to the nudge yet). In that case, the system falls back to weighting the historical baseline more heavily rather than overreacting to a small, unrepresentative sample. A second exception is a human-review checkpoint: whenever a new forecast shifts by more than a set threshold (for instance, more than 10 percentage points) from the prior run, the system flags the change for an organizer to review before it's treated as final, rather than auto-publishing a volatile number. Organizers always make the final food/drink/swag purchasing decision; the workflow's job is to hand them a reliable, updated number, not to place orders itself.
 
+When a flagged shift occurs, the system first performs T7: Investigate cause of shift, checking up to three approved signals one at a time (competing campus events, concentrated "not attending" replies, and promotion-channel issues) and letting each finding decide the next check. The investigation stops when a supported cause is found, the 3-check limit is reached, or no remaining check can make progress, and the findings go to the organizer for T8 review.
+
 ### 1.5 Workflow Diagram
 
 
@@ -37,8 +39,8 @@ D2{" D2: Did the forecast generate successfully? "}
 D2 -- " No " --> STOP1([" Run incomplete: forecast failed to generate; stop without delivering "])
 D2 -- " Yes " --> D3
 D3{" D3: Does the new forecast shift by more than the set threshold (e.g. more than 10 percentage points) from the prior run? "}
-D3 -- " No: within threshold " --> T9
-D3 -- " Yes: exceeds threshold " --> T7[" T7: Investigate the likely cause of the shift by checking one approved signal at a time (new competing campus events, unusual concentration of 'not attending' replies from one group, promotion-channel issues like a broken RSVP link or viral post); let each finding determine which signal to check next "]
+   T7 --> D5{" D5: Has a supported cause been identified, has the check limit (3 checks) been reached, or can no remaining check make progress? "}
+   D5 -- " No: no cause yet and another approved check can still make progress " --> T7
 T7 --> D5{" D5: Has a supported cause been identified, or has the check limit (3 checks) been reached? "}
 D5 -- " No: neither condition met yet, another approved check remains " --> T7
 D5 -- " Yes " --> T8[" T8: Review the flagged change, the investigation findings, and any unresolved question with an organizer before the forecast is treated as final "]
