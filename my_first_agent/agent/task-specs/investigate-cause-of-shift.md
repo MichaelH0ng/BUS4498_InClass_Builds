@@ -120,9 +120,9 @@ Tools may use only the approved signal sources listed in Section 2 for this flag
 ## 6. Outbound Deliverable
 
 - **Status:** completed or escalated to human.
-- **Result or recommendation:** The identified cause of the forecast shift (competing campus event, decline concentrated in one respondent group, or promotion-channel issue), stated in one sentence with the subtask that produced it. If the task was escalated before a supported cause was found, write undetermined.
-- **Evidence summary:** The specific finding behind the result and its source: competing event name, date, and overlap from the campus calendar; "not attending" counts by respondent group from T2 responses; or RSVP link status and post activity from CPVC's official accounts. For an escalation, what each check found or why it could not run.
-- **Subtasks performed:** Each permitted check run, in order, with its finding and any retry or tool failure.
-- **Unresolved issues:** Checks not run, unreachable sources, or ambiguous findings. Write none only when the task has been completed successfully.
-- **Handoff note:** Why the investigation stopped, the open question, and what the organizer needs to decide at T8 (for example, accept the shift as real, override it, or wait for the next run); write "Not applicable" for a completed task.
+- **Result or recommendation:** The completed result. If the task was escalated before reaching a supported result, write undetermined.
+- **Evidence summary:**  The most important evidence supporting the result or explaining why no result could be reached.
+- **Subtasks performed:**  The permitted subtasks completed, including repeated attempts.
+- **Unresolved issues:**  Remaining uncertainties or questions. Write none only when the task has been completed successfully.
+- **Handoff note:** Reason for stopping, unresolved questions, and what the reviewer needs to decide; write “Not applicable” for a completed task.
 - **Next task or recipient:** T8 (Review with organizer) in all cases. On completed status, the organizer reviews the identified cause before the forecast is finalized. On escalated status, the organizer reviews the unresolved findings via the same review step.
