@@ -13,7 +13,7 @@ Michael Hong
 HackTrack
 
 ### System Goal
-For CPVC organizers, accurately anticipate actual hackathon attendance so food, drinks, and swag can be planned to match real turnout, measured by the gap between predicted and actual attendance moving from roughly 60% (registrations vs. the ~40% attendance rate) to within 10-15%, without requiring excessive follow-up communication or compromising participant privacy.
+For CPVC organizers, accurately anticipate actual hackathon attendance so food, drinks, and swag can be planned to match real turnout, measured by the gap between forecast and actual attendance, moving from roughly 60 percentage points (planning off raw registrations when only about 40% attend) to within 10 percentage points, without sending more than one confirmation nudge per registrant or using any participant data beyond registration and RSVP replies.
 
 ### Who Is Better Off When This Works?
 
