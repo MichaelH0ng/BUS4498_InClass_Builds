@@ -41,8 +41,6 @@ D2 -- " Yes " --> D3
 D3{" D3: Does the new forecast shift by more than the set threshold (e.g. more than 10 percentage points) from the prior run? "}
    T7 --> D5{" D5: Has a supported cause been identified, has the check limit (3 checks) been reached, or can no remaining check make progress? "}
    D5 -- " No: no cause yet and another approved check can still make progress " --> T7
-T7 --> D5{" D5: Has a supported cause been identified, or has the check limit (3 checks) been reached? "}
-D5 -- " No: neither condition met yet, another approved check remains " --> T7
 D5 -- " Yes " --> T8[" T8: Review the flagged change, the investigation findings, and any unresolved question with an organizer before the forecast is treated as final "]
 T8 --> T9[" T9: Deliver the forecast to organizers through the shared dashboard or summary report "]
 T9 --> D4{" D4: Was the updated forecast stored or delivered to organizers? "}
