@@ -25,7 +25,7 @@ T1 starts every scheduled forecast run. It reads the hackathon registration reco
 - **Contents and format:** Table of registrations with registration ID, registration timestamp, status (active or canceled), and respondent group/channel.
 - **Source:** CPVC's RSVP form platform
 
-- **If a required input is missing or invalid:** Do not produce a partial count. Record the run as incomplete with the missing input and error in the run log, and flag it on the shared dashboard for the organizer designated for that run. The next scheduled run retries automatically.
+- **If a required input is missing or invalid:** Do not produce a partial count. Record the missing input and error in the run log; because no forecast can be generated, the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). Flag the failed run on the shared dashboard for the organizer designated for that run. The next scheduled run starts fresh.
 
 ## 3. Outputs
 
@@ -49,4 +49,4 @@ T1 starts every scheduled forecast run. It reads the hackathon registration reco
 - **Task timeout:** 30 seconds for one task run, including retries.
 - **Maximum retries:** 2
 - **Retry only when:** The RSVP form platform returns a temporary error (timeout, server error, or rate limit). Wait 5 seconds between attempts. Do not retry denied access or an invalid form ID. The tool is read-only, so retries cannot create duplicate records.
-- **On timeout, exhausted retries, or an error that cannot be retried:** Record the run as incomplete with the error type and attempts in the run log, do not pass a partial count to T3, and flag the failed run on the shared dashboard for the organizer designated for that run. Do not continue as if registrations were counted.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Record the error type and attempts in the run log and do not pass a partial count to T2 or T3; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). Flag the failed run on the shared dashboard for the organizer designated for that run. Do not continue as if registrations were counted.

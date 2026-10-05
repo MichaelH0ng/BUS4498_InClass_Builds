@@ -25,7 +25,7 @@ D1 decides which forecasting path the run takes. If too few registrants have ans
 - **Contents and format:** Single configured percentage with the date it was last changed.
 - **Source:** HackTrack configuration set by Michael Hong (system designer)
 
-- **If a required input is missing or invalid:** If the dataset is missing or the reply rate cannot be calculated, record the run as incomplete in the run log and flag it on the shared dashboard for the organizer designated for that run. If the minimum reply rate is missing, route to T4 (the conservative path) and note "default routing used" in the run log.
+- **If a required input is missing or invalid:** If the dataset is missing or the reply rate cannot be calculated, record the error in the run log; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). Flag the failed run on the shared dashboard for the organizer designated for that run. If the minimum reply rate is missing, route to T4 (the conservative path) and note "default routing used" in the run log.
 
 ## 3. Outputs
 
@@ -49,4 +49,4 @@ D1 decides which forecasting path the run takes. If too few registrants have ans
 - **Task timeout:** 5 seconds for one task run.
 - **Maximum retries:** 0
 - **Retry only when:** Not applicable
-- **On timeout, exhausted retries, or an error that cannot be retried:** Record the run as incomplete with the error in the run log, route nowhere, and flag the failed run on the shared dashboard for the organizer designated for that run.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Route to T4: Weight the historical baseline more heavily (the conservative path) and note "default routing used" in the run log so the organizer can see it on the dashboard.

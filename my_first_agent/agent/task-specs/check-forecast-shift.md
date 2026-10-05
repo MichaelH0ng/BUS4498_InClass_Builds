@@ -56,4 +56,4 @@ D3 decides whether a new forecast can go straight to organizers or needs investi
 - **Task timeout:** 5 seconds for one task run.
 - **Maximum retries:** 0
 - **Retry only when:** Not applicable
-- **On timeout, exhausted retries, or an error that cannot be retried:** Route the forecast to T7 so it receives investigation and organizer review rather than being published unchecked, and record the error in the run log.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Create the forecast shift alert with the difference marked "comparison failed" and route it to T7: Investigate cause of shift, so the forecast receives investigation and organizer review rather than being published unchecked. Record the error in the run log.

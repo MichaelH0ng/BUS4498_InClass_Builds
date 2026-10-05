@@ -25,7 +25,7 @@ T5 runs when D1 finds enough confirmation replies to meaningfully update the mod
 - **Contents and format:** Stored model parameters with version number, fit date, and the run ID that produced them.
 - **Source:** HackTrack model store (previous successful T5 run, or the initial model built from historical CPVC events)
 
-- **If a required input is missing or invalid:** If the dataset is missing, record the run as incomplete. If the current model version cannot be loaded, refit from the historical baseline only and mark the model "rebuilt from baseline" in the run log.
+- **If a required input is missing or invalid:** If the dataset is missing, record the error in the run log; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). If the current model version cannot be loaded, refit from the historical baseline only and mark the model "rebuilt from baseline" in the run log.
 
 ## 3. Outputs
 

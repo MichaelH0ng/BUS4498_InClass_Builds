@@ -9,15 +9,15 @@
 
 ## 1. Task Description
 
-T6 produces the number organizers plan around: an expected attendance point estimate and a confidence range. It applies the prediction model to the current data, using either the updated model from T5 or the baseline-weighted dataset from T4 when reply volume was low. The operation is model-supported: the model multiplies each response group's count by its estimated show-up rate, sums the result for the point estimate, and calculates the range from the model's uncertainty. T6 also attaches the prior run's forecast and the percentage-point change so D3 can check whether the shift exceeds the threshold.
+T6 produces the number organizers plan around: an expected attendance point estimate and a confidence range. It applies the prediction model to the current data. On the normal path it applies the updated model from T5 to the combined attendance dataset; on the low-volume path it applies the current stored model to the baseline-weighted dataset from T4. The operation is model-supported: the model multiplies each response group's count by its estimated show-up rate, sums the result for the point estimate, and calculates the range from the model's uncertainty. T6 also attaches the prior run's forecast and the percentage-point change so D3 can check whether the shift exceeds the threshold.
 
 ## 2. Inputs
 
 ### Input 1
 
-- **Input name:** Updated prediction model
-- **Contents and format:** Model parameters with version number, run ID, and estimated show-up rate per response group.
-- **Source:** T5: Update the prediction model with the combined data (normal path)
+- **Input name:** Combined attendance dataset
+- **Contents and format:** Structured record with run ID, active registrations, reply counts by response value, reply rate, counts by respondent group/channel, and historical attendance rate.
+- **Source:** T3: Combine registration and confirmation data with the historical CPVC attendance-to-registration pattern (~40%) (normal path, after T5)
 
 ### Input 2
 
@@ -27,11 +27,17 @@ T6 produces the number organizers plan around: an expected attendance point esti
 
 ### Input 3
 
+- **Input name:** Updated prediction model
+- **Contents and format:** Model parameters with version number, run ID, and estimated show-up rate per response group.
+- **Source:** T5: Update the prediction model with the combined data (normal path); on the low-volume path, the current model version from the HackTrack model store
+
+### Input 4
+
 - **Input name:** Prior forecast
 - **Contents and format:** Structured record of the last delivered forecast with run ID, point estimate, and confidence range.
-- **Source:** HackTrack forecast history (previous run's T9 output)
+- **Source:** HackTrack forecast history (the previous run's Delivered forecast from T9: Deliver the forecast to organizers through the shared dashboard or summary report)
 
-- **If a required input is missing or invalid:** Exactly one of Input 1 or Input 2 is required for a run. If neither is present, record the run as incomplete so it ends at D2 ("No"). If no prior forecast exists (first run), set the change to "not applicable" and continue.
+- **If a required input is missing or invalid:** Each run needs one dataset (Input 1 on the normal path or Input 2 on the low-volume path) and a model (Input 3). If either is missing, record the error in the run log; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). If no prior forecast exists (first run), set the change to "not applicable" and continue.
 
 ## 3. Outputs
 
@@ -47,7 +53,7 @@ T6 produces the number organizers plan around: an expected attendance point esti
 ### Tool 1
 
 - **Tool name:** `generate_attendance_forecast`
-- **Input:** Updated prediction model or Baseline-weighted attendance dataset; Prior forecast
+- **Input:** Combined attendance dataset or Baseline-weighted attendance dataset; Updated prediction model; Prior forecast
 - **Output:** Attendance forecast record
 - **Implementation Route:** Functions/scripts (apply the model and calculate the confidence range) and database queries (read the prior forecast and save the new record)
 - **Integration approach:** Direct integration

@@ -31,7 +31,7 @@ T3 merges the current registration snapshot, the confirmation replies, and CPVC'
 - **Contents and format:** Structured record of past CPVC events with registrations, actual attendance, and the resulting attendance-to-registration rate.
 - **Source:** CPVC's historical event records (maintained by CPVC organizers)
 
-- **If a required input is missing or invalid:** If either current input is missing or the run IDs do not match, stop and record the run as incomplete in the run log. If the historical record is unavailable, use the documented default rate of 40% and label the dataset "default baseline used" so the organizer sees it on the dashboard.
+- **If a required input is missing or invalid:** If either current input is missing or the run IDs do not match, record the error in the run log; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). If the historical record is unavailable, use the documented default rate of 40% and label the dataset "default baseline used" so the organizer sees it on the dashboard.
 
 ## 3. Outputs
 
@@ -55,4 +55,4 @@ T3 merges the current registration snapshot, the confirmation replies, and CPVC'
 - **Task timeout:** 20 seconds for one task run, including retries.
 - **Maximum retries:** 1
 - **Retry only when:** The historical records read fails with a temporary database error. Wait 2 seconds before retrying. Calculation errors are not retried. The dataset is saved under the run ID, so a retry overwrites the same record instead of creating a duplicate.
-- **On timeout, exhausted retries, or an error that cannot be retried:** Record the run as incomplete with the failed step in the run log, pass nothing to D1, and flag the failed run on the shared dashboard for the organizer designated for that run.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Record the failed step in the run log and pass nothing to D1; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). Flag the failed run on the shared dashboard for the organizer designated for that run.

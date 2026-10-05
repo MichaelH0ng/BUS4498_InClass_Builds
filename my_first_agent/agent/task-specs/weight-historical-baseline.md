@@ -25,7 +25,7 @@ T4 is the exception path used when D1 finds that confirmation-reply volume is to
 - **Contents and format:** Structured configuration with the D1 minimum reply rate and the reweighting formula.
 - **Source:** HackTrack configuration set by Michael Hong (system designer)
 
-- **If a required input is missing or invalid:** If the dataset or weighting rule is missing, record the run as incomplete in the run log and flag it on the shared dashboard for the organizer designated for that run. Do not fall back to raw registrations.
+- **If a required input is missing or invalid:** If the dataset or weighting rule is missing, record the error in the run log; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). Flag the failed run on the shared dashboard for the organizer designated for that run. Do not fall back to raw registrations.
 
 ## 3. Outputs
 
@@ -49,4 +49,4 @@ T4 is the exception path used when D1 finds that confirmation-reply volume is to
 - **Task timeout:** 10 seconds for one task run.
 - **Maximum retries:** 0
 - **Retry only when:** Not applicable
-- **On timeout, exhausted retries, or an error that cannot be retried:** Record the run as incomplete with the error in the run log, pass nothing to T6, and flag the failed run on the shared dashboard for the organizer designated for that run.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Record the error in the run log and pass nothing to T6; the run ends at D2 ("No: Run incomplete: forecast failed to generate; stop without delivering"). Flag the failed run on the shared dashboard for the organizer designated for that run.

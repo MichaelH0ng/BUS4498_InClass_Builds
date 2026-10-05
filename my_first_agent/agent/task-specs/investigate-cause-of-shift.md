@@ -24,7 +24,7 @@ On inference failure or exhausted limits: Record the unresolved status and hand 
 ### Input 1
 - **Input name:** Forecast shift alert
 - **What it contains:** The current forecast, prior forecast, and percentage-point difference that tripped the threshold
-- **Source:** D3 (Shift exceeds threshold?)
+- **Source:** D3: Does the new forecast shift by more than the set threshold (e.g. more than 10 percentage points) from the prior run? (Forecast shift alert output)
 
 ### Input 2
 - **Input name:** Campus event calendar data
@@ -34,7 +34,7 @@ On inference failure or exhausted limits: Record the unresolved status and hand 
 ### Input 3
 - **Input name:** RSVP confirmation responses
 - **What it contains:** Individual confirmation replies with respondent group/channel, for spotting a concentrated decline pattern
-- **Source:** T2 (Collect confirmations)
+- **Source:** T2: Collect confirmation-nudge replies received since the last run
 
 ### Input 4
 - **Input name:** Promotion channel status
@@ -125,4 +125,5 @@ Tools may use only the approved signal sources listed in Section 2 for this flag
 - **Subtasks performed:**  The permitted subtasks completed, including repeated attempts.
 - **Unresolved issues:**  Remaining uncertainties or questions. Write none only when the task has been completed successfully.
 - **Handoff note:** Reason for stopping, unresolved questions, and what the reviewer needs to decide; write “Not applicable” for a completed task.
-- **Next task or recipient:** T8 (Review with organizer) in all cases. On completed status, the organizer reviews the identified cause before the forecast is finalized. On escalated status, the organizer reviews the unresolved findings via the same review step.
+- **Investigation progress record:** After each check, record the run ID, checks used so far, whether a supported cause has been recorded, and whether any remaining permitted check can make progress. D5 reads this record to decide whether to return to T7 or stop.
+- **Next task or recipient:** After each check, the investigation progress record goes to D5: Has a supported cause been identified, has the check limit (3 checks) been reached, or can no remaining check make progress? When D5 stops the investigation, this full deliverable (the Investigation deliverable) goes to T8: Review the flagged change, the investigation findings, and any unresolved question with an organizer before the forecast is treated as final, in all cases. On completed status, the organizer reviews the identified cause before the forecast is finalized. On escalated status, the organizer reviews the unresolved findings via the same review step.
