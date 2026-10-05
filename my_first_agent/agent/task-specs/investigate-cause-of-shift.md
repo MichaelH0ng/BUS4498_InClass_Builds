@@ -114,4 +114,15 @@ Tools may use only the approved signal sources listed in Section 2 for this flag
 ## 5. When to Stop or Hand Off to a Human
 
 - **Stop successfully when:** A supported cause has been identified for the forecast shift, backed by a specific finding from at least one permitted subtask (e.g., a confirmed competing event on the hackathon date, a confirmed decline concentrated in one respondent group, or a confirmed RSVP link outage or viral post), and that finding is recorded along with which subtask produced it. A "no clear signal found" result after using the full check budget is not a successful stop — see the hand-off condition below.
-- **Hand off early when:** Any of the following occurs — (1) the 3-check budget is exhausted without a supported cause being identified, (2) a
+- **Hand off early when:** Any of the following occurs — (1) the 3-check budget is exhausted without a supported cause being identified, (2) a subtask surfaces evidence outside its permitted read-only scope (e.g., a finding that would require contacting a person or editing a record), or (3) a subtask fails to run (e.g., the calendar feed or RSVP platform is unreachable) and no other permitted subtask can make useful progress.
+- **Hand off to:** The organizer designated for that run's review (the same organizer role referenced in T8 of the workflow), via the shared dashboard or summary report queue used for forecast delivery.
+
+## 6. Outbound Deliverable
+
+- **Status:** completed or escalated to human.
+- **Result or recommendation:** The completed result. If the task was escalated before reaching a supported result, write undetermined.
+- **Evidence summary:**  The most important evidence supporting the result or explaining why no result could be reached.
+- **Subtasks performed:**  The permitted subtasks completed, including repeated attempts.
+- **Unresolved issues:**  Remaining uncertainties or questions. Write none only when the task has been completed successfully.
+- **Handoff note:** Reason for stopping, unresolved questions, and what the reviewer needs to decide; write “Not applicable” for a completed task.
+- **Next task or recipient:** T8 (Review with organizer) in all cases. On completed status, the organizer reviews the identified cause before the forecast is finalized. On escalated status, the organizer reviews the unresolved findings via the same review step.
