@@ -40,7 +40,7 @@ D2 -- " No " --> STOP1([" Run incomplete: forecast failed to generate; stop with
 D2 -- " Yes " --> D3
 D3{" D3: Does the new forecast shift by more than the set threshold (e.g. more than 10 percentage points) from the prior run? "}
 D3 -- " No: within threshold " --> T9
-D3 -- " Yes: exceeds threshold " --> T7[" T7: Investigate the likely cause of the shift by checking one approved signal at a time (new competing campus events, unusual concentration of 'not attending' replies from one group, promotion-channel issues like a broken RSVP link or viral post); let each finding determine which signal to check next "]
+D3 -- " Yes: exceeds threshold " --> T7[" T7: Investigate cause of shift "]
 T7 --> D5{" D5: Has a supported cause been identified, has the check limit (3 checks) been reached, or can no remaining check make progress? "}
 D5 -- " No: no cause yet and another approved check can still make progress " --> T7
 D5 -- " Yes " --> T8[" T8: Review the flagged change, the investigation findings, and any unresolved question with an organizer before the forecast is treated as final "]
