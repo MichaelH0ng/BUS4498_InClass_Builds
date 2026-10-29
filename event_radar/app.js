@@ -7,13 +7,15 @@
   var board = document.getElementById("board");
   var form = document.getElementById("post-form");
   var textarea = document.getElementById("announcement");
+  var flyerInput = document.getElementById("flyer");
   var postButton = document.getElementById("post-button");
   var resultBox = document.getElementById("result");
   var refreshButton = document.getElementById("refresh");
   var filterBar = document.getElementById("filters");
 
   // Only these columns are granted to visitors (see the Stage 4 migration).
-  var COLUMNS = "id, created_at, status, title, club, event_date, start_time, end_time, place_name, place_detail, cost, free_food, summary";
+  var COLUMNS = "id, created_at, status, title, club, event_date, start_time, end_time, place_name, place_detail, cost, free_food, summary, flyer_url";
+  var MAX_FLYER_BYTES = 5 * 1024 * 1024;
 
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -85,6 +87,16 @@
     if (tags.childNodes.length) body.appendChild(tags);
 
     item.appendChild(body);
+
+    // Show a flyer only if its link points into this project's public flyers bucket.
+    var flyerPrefix = config.supabaseUrl + "/storage/v1/object/public/flyers/";
+    if (event.flyer_url && String(event.flyer_url).indexOf(flyerPrefix) === 0) {
+      var flyer = el("img", "flyer");
+      flyer.src = event.flyer_url;
+      flyer.alt = "Flyer for " + (event.title || "this event");
+      flyer.loading = "lazy";
+      item.appendChild(flyer);
+    }
     return item;
   }
 
@@ -148,6 +160,18 @@
       return;
     }
 
+    var photo = flyerInput.files && flyerInput.files[0];
+    if (photo) {
+      if (photo.type !== "image/jpeg" && photo.type !== "image/png") {
+        showResult("error", "Please choose a JPG or PNG photo.");
+        return;
+      }
+      if (photo.size > MAX_FLYER_BYTES) {
+        showResult("error", "That photo is over 5 MB. Please choose a smaller one.");
+        return;
+      }
+    }
+
     postButton.disabled = true;
     postButton.textContent = "Checking your post…";
     resultBox.replaceChildren();
@@ -155,6 +179,7 @@
     try {
       var data = new FormData();
       data.append("announcement", text);
+      if (photo) data.append("flyer", photo);
       // The publishable key goes only on the apikey header (no Authorization header).
       var response = await fetch(config.supabaseUrl + "/functions/v1/submit-event", {
         method: "POST",
@@ -168,7 +193,10 @@
       } else {
         var status = LABELS[answer.status] ? answer.status : "error";
         showResult(status, answer.message, answer.reasons);
-        if (status === "published" || status === "waiting") textarea.value = "";
+        if (status === "published" || status === "waiting") {
+          textarea.value = "";
+          flyerInput.value = "";
+        }
         if (status === "published") loadEvents();
       }
     } catch (error) {
