@@ -52,6 +52,27 @@
     <ul class="board" id="board">
       <li class="empty">Loading events…</li>
     </ul>
+
+    <details class="card mod" id="mod">
+      <summary>Moderator sign-in</summary>
+      <div id="mod-signin">
+        <form id="mod-form">
+          <label for="mod-email">Email</label>
+          <input type="email" id="mod-email" autocomplete="username" required>
+          <label for="mod-password">Password</label>
+          <input type="password" id="mod-password" autocomplete="current-password" required>
+          <button type="submit" id="mod-signin-button">Sign in</button>
+        </form>
+        <div id="mod-message" role="status" aria-live="polite"></div>
+      </div>
+      <div id="mod-panel" hidden>
+        <p class="muted" id="mod-who"></p>
+        <h3>Waiting for review</h3>
+        <div id="mod-note" role="status" aria-live="polite"></div>
+        <ul class="board preview" id="mod-board"></ul>
+        <button type="button" class="ghost" id="mod-signout">Sign out</button>
+      </div>
+    </details>
   </section>
 
 </main>
