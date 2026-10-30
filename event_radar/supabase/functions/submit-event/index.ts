@@ -310,11 +310,21 @@ async function handlePost(req: Request): Promise<Response> {
   // 1. Read the announcement and the optional flyer (a form, or a JSON body without a photo).
   let announcement = "";
   let flyer: Flyer | null = null;
+  // Set only when the chat reader (Stage 14) sends a message from a group chat.
+  let source = "", sourceId = "", sourceName = "";
   try {
     const type = req.headers.get("content-type") ?? "";
     if (type.includes("application/json")) {
       const body = await req.json();
       announcement = typeof body?.announcement === "string" ? body.announcement : "";
+      // `thread` (the sender's earlier messages) is accepted but not used until Stage 12.
+      const text = (value: unknown, max: number) => typeof value === "string" ? value.trim().slice(0, max) : "";
+      sourceId = text(body?.source_id, 100);
+      if (sourceId) {
+        source = text(body?.source, 40);
+        sourceName = text(body?.source_name, 100);
+        if (!source) sourceId = "";
+      }
     } else {
       const form = await req.formData();
       const value = form.get("announcement");
@@ -347,6 +357,29 @@ async function handlePost(req: Request): Promise<Response> {
   if (!supabaseUrl || !key) return fail("The agent can't reach the database yet.", 503);
 
   const db = createClient(supabaseUrl, key, { auth: { persistSession: false } });
+
+  // 1b. A chat message gets one decision, ever. Check before any lookup or AI call, so a message read twice costs nothing.
+  const alreadyRead = () =>
+    json({
+      ok: true,
+      status: "duplicate",
+      already_read: true,
+      message: "This chat message was already read.",
+      reasons: ["The agent already made a decision about this message."],
+    });
+  if (sourceId) {
+    const { data: seen, error: seenError } = await db
+      .from("events")
+      .select("id")
+      .eq("source", source)
+      .eq("source_id", sourceId)
+      .limit(1);
+    if (seenError) {
+      console.error("message check failed", seenError);
+      return fail("Could not check whether this message was already read. Please try again.", 500);
+    }
+    if (seen && seen.length > 0) return alreadyRead();
+  }
 
   // 2. Spending limit: refuse new posts after 100 in the last 24 hours.
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -460,12 +493,17 @@ async function handlePost(req: Request): Promise<Response> {
       note_for_moderator: noteParts.filter(Boolean).join(" "),
       dedupe_key: dedupeKey,
       ai_model: ai === "claude" ? CLAUDE_MODEL : OPENAI_MODEL,
+      source,
+      source_id: sourceId,
+      source_name: sourceName,
     })
     .select("id, status, title, club, event_date, start_time, end_time, place_name, place_detail, cost, free_food, summary, flyer_url")
     .single();
 
   if (error) {
     if (error.code === "23505") {
+      // Two readers raced on the same chat message: the one-decision-per-message index refused the second.
+      if (sourceId && error.message.includes("events_one_per_message")) return alreadyRead();
       return json({
         ok: true,
         status: "duplicate",
