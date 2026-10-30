@@ -250,6 +250,28 @@ async function checkGroupMe(): Promise<Record<string, unknown>> {
   }
 }
 
+// What GroupMe returns for the newest messages and for "after the bookmark". Counts, types, and ages only: no text.
+async function describeMessages(token: string, groupId: string, lastId: string): Promise<Record<string, unknown>> {
+  const now = Math.floor(Date.now() / 1000);
+  const brief = (m: Message) => ({
+    sender_type: m.sender_type,
+    system: m.system,
+    has_text: typeof m.text === "string" && m.text.trim() !== "",
+    age_seconds: now - m.created_at,
+    newer_than_bookmark: /^\d+$/.test(m.id) && /^\d+$/.test(lastId) ? BigInt(m.id) > BigInt(lastId) : null,
+  });
+  try {
+    const newest = await fetchMessages(token, groupId, { limit: "5" });
+    const after = lastId ? await fetchMessages(token, groupId, { after_id: lastId, limit: String(BATCH) }) : null;
+    return {
+      newest_five: newest.messages.map(brief),
+      after_bookmark: after ? { status: after.status, count: after.messages.length, messages: after.messages.map(brief) } : null,
+    };
+  } catch (error) {
+    return { error: String(error instanceof Error ? error.message : error) };
+  }
+}
+
 // GET: the reader's status. With ?check=groupme the same answer also holds GroupMe's side, under "groupme".
 async function handleGet(req: Request): Promise<Response> {
   const { token, groupId, botId } = config();
@@ -279,7 +301,10 @@ async function handleGet(req: Request): Promise<Response> {
       ? "The GroupMe reader is running."
       : "The GroupMe reader is running, but GROUPME_TOKEN or GROUPME_GROUP_ID isn't saved in Supabase Secrets yet.",
   };
-  if (new URL(req.url).searchParams.get("check") === "groupme") answer.groupme = await checkGroupMe();
+  if (new URL(req.url).searchParams.get("check") === "groupme") {
+    answer.groupme = await checkGroupMe();
+    if (ready) answer.groupme_messages = await describeMessages(token, groupId, lastMessageId);
+  }
   return json(answer);
 }
 
