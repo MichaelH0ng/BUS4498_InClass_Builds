@@ -89,11 +89,23 @@
       <p class="who">Signed in as <b id="modWho"></b> <button type="button" class="ghost small" id="signOutBtn">Sign out</button></p>
       <div class="tabs" role="tablist" aria-label="Moderator sections">
         <button type="button" class="tab" role="tab" data-tab="waiting" aria-selected="true">Waiting <span class="count" id="waitingCount">0</span></button>
+        <button type="button" class="tab" role="tab" data-tab="lessons" aria-selected="false">Lessons <span class="count" id="lessonsCount">0</span></button>
         <button type="button" class="tab" role="tab" data-tab="tools" aria-selected="false">Tools</button>
       </div>
       <section class="tabpanel" data-panel="waiting">
         <p id="waitingStatus" class="muted" role="status"></p>
         <ul id="waitingList" class="queue"></ul>
+      </section>
+      <section class="tabpanel" data-panel="lessons" hidden>
+        <p class="muted">The agent reads every lesson that is switched on, with every post. Switch one off to make it forget.</p>
+        <form id="teachForm" class="teach">
+          <label for="lessonText">Teach the agent something <span class="hint">One sentence. A lesson can make a post wait or shape the card. It can’t cancel a posting rule.</span></label>
+          <textarea id="lessonText" rows="2" maxlength="300" required placeholder="Drop-in study hours, tutoring, and office hours aren’t events for this website. Hold them for a moderator."></textarea>
+          <button type="submit" id="teachBtn">Save the lesson</button>
+          <p id="teachMsg" class="muted" role="status"></p>
+        </form>
+        <p id="lessonsStatus" class="muted" role="status"></p>
+        <ul id="lessonsList" class="lessons"></ul>
       </section>
       <section class="tabpanel" data-panel="tools" hidden>
         <h3>Clear the board</h3>
