@@ -243,7 +243,6 @@
     if (session) {
       $("modWho").textContent = session.user.email;
       loadWaiting();
-      loadLessons();
     }
   }
   function review(ev, status) {
@@ -279,20 +278,10 @@
           box.appendChild(el("p", "original", "Original post: " + ev.announcement));
           var looked = memo(ev.agent_notes);
           if (looked) box.appendChild(looked);
-          // Teach the agent while the post is fresh: the lesson is saved with the decision.
-          var teachLabel = el("label", "teach-inline");
-          teachLabel.appendChild(el("span", null, "Teach the agent something (optional)"));
-          var teachInput = el("input");
-          teachInput.type = "text"; teachInput.maxLength = 300;
-          teachInput.placeholder = "One sentence the agent should remember next time.";
-          teachLabel.appendChild(teachInput);
-          box.appendChild(teachLabel);
           var approve = el("button", null, "Approve");
           var reject = el("button", "ghost", "Reject");
           approve.type = reject.type = "button";
           function decideThen(status) {
-            var lesson = teachInput.value.trim();
-            if (lesson) { saveLesson(lesson, ev.id).then(function () { review(ev, status); }); return; }
             review(ev, status);
           }
           approve.addEventListener("click", function () { decideThen("published"); });
@@ -336,55 +325,6 @@
     });
   });
 
-  /* ---------- lessons: what moderators teach the agent ---------- */
-  function saveLesson(text, fromPost) {
-    return db.from("lessons").insert({ lesson: text.slice(0, 300), created_by: session.user.email, from_post: fromPost || null })
-      .then(function (res) {
-        $("teachMsg").textContent = res.error ? "Couldn't save the lesson: " + res.error.message : "Saved. The agent reads it with the next post.";
-        if (!res.error) toast("Lesson saved");
-        loadLessons();
-      });
-  }
-  function loadLessons() {
-    $("lessonsStatus").textContent = "Loading…";
-    db.from("lessons").select("*").order("created_at", { ascending: true })
-      .then(function (res) {
-        var list = $("lessonsList");
-        list.textContent = "";
-        if (res.error) { $("lessonsStatus").textContent = "Couldn't load the lessons: " + res.error.message; return; }
-        res.data.forEach(function (l) {
-          var li = el("li", "lesson" + (l.active ? "" : " off"));
-          var sw = el("label", "switch");
-          var box = el("input");
-          box.type = "checkbox"; box.checked = l.active;
-          box.setAttribute("aria-label", (l.active ? "Switch off: " : "Switch on: ") + l.lesson);
-          box.addEventListener("change", function () {
-            db.from("lessons").update({ active: box.checked }).eq("id", l.id).then(function (r) {
-              if (r.error) { $("lessonsStatus").textContent = "Couldn't change that: " + r.error.message; box.checked = !box.checked; return; }
-              toast(box.checked ? "Lesson on" : "Lesson off: the agent forgets it");
-              loadLessons();
-            });
-          });
-          sw.appendChild(box);
-          sw.appendChild(el("span", "knob"));
-          li.appendChild(sw);
-          var body = el("div", "lesson-body");
-          body.appendChild(el("p", "lesson-text", l.lesson));
-          body.appendChild(el("p", "lesson-meta", (l.active ? "On" : "Off, the agent no longer reads it") + (l.created_by ? " · by " + l.created_by : "") + " · " + new Date(l.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })));
-          li.appendChild(body);
-          list.appendChild(li);
-        });
-        var on = res.data.filter(function (l) { return l.active; }).length;
-        $("lessonsCount").textContent = String(on);
-        $("lessonsStatus").textContent = res.data.length ? on + " of " + res.data.length + " lesson" + (res.data.length === 1 ? "" : "s") + " switched on" : "No lessons yet. The agent follows only the posting rules.";
-      });
-  }
-  $("teachForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    var text = $("lessonText").value.trim();
-    if (!text) return;
-    saveLesson(text, null).then(function () { $("lessonText").value = ""; });
-  });
 
   loadBoard(false);
 })();

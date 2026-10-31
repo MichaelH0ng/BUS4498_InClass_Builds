@@ -1,20 +1,21 @@
--- Stage 8: moderator sign-in
--- Signed-in moderators (the "authenticated" role) can read every post and approve or reject it.
--- This is safe only because new sign-ups are turned off (Authentication -> Sign In / Providers).
+-- Stage 8: moderator sign-in.
+-- A signed-in user is a moderator. That is safe only because new sign-ups are turned off
+-- (Authentication → Sign In / Providers → "Allow new users to sign up" off), so the only
+-- accounts are the ones the owner creates in the Supabase dashboard.
 
-create policy "Moderators can read every event"
-  on public.events
-  for select
+drop policy if exists "Moderators can read every post" on public.events;
+create policy "Moderators can read every post"
+  on public.events for select
   to authenticated
   using (true);
 
-create policy "Moderators can review events"
-  on public.events
-  for update
+drop policy if exists "Moderators can approve or reject" on public.events;
+create policy "Moderators can approve or reject"
+  on public.events for update
   to authenticated
   using (true)
   with check (status in ('published', 'waiting', 'rejected'));
 
--- Read the whole table, but change only the review columns.
+-- Moderators see every column, and may change only the review fields.
 grant select on public.events to authenticated;
 grant update (status, status_reason, reviewed_at, reviewed_by) on public.events to authenticated;
